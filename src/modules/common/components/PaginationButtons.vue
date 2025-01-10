@@ -11,7 +11,7 @@ defineProps<{ page: number; hasMoreData: boolean }>();
       type="button"
       :disabled="page === 1"
       @click="$router.push({ query: { page: page - 1 } })"
-      class="flex items-center justify-center px-4 h-10 me-3 text-base font-medium bg-blue-500 text-white border border-blue-300 rounded-lg hover:bg-blue-600"
+      class="flex items-center justify-center px-4 h-10 me-3 text-base font-medium bg-blue-500 text-white border border-blue-300 rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500 disabled:border-gray-300 disabled:cursor-not-allowed"
     >
       <chevron-left-icon />
       Anterior
@@ -20,7 +20,7 @@ defineProps<{ page: number; hasMoreData: boolean }>();
       type="button"
       :disabled="!hasMoreData"
       @click="$router.push({ query: { page: page + 1 } })"
-      class="flex items-center justify-center px-4 h-10 text-base font-medium bg-blue-500 text-white border border-blue-300 rounded-lg hover:bg-blue-600"
+      class="flex items-center justify-center px-4 h-10 text-base font-medium bg-blue-500 text-white border border-blue-300 rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500 disabled:border-gray-300 disabled:cursor-not-allowed"
     >
       Siguiente
       <chevron-right-icon />

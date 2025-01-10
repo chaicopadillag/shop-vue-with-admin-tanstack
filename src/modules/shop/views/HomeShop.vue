@@ -23,11 +23,12 @@ import PaginationButtons from '@/modules/common/components/PaginationButtons.vue
 import { getProductsPaginate } from '@/modules/products/actions/get-products-paginate.action';
 import ProductGrid from '@/modules/products/components/ProductGrid.vue';
 import TabMenu from '@/modules/shop/components/TabMenu.vue';
-import { useQuery } from '@tanstack/vue-query';
-import { ref, watch } from 'vue';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
+import { ref, watch, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
+const queryClient = useQueryClient();
 
 const currentPage = ref(1);
 
@@ -47,9 +48,21 @@ watch(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     currentPage.value = isNaN(page as any) ? 1 : Number(page as any);
     console.log({ currentPage: currentPage.value });
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   },
   {
     immediate: true,
   },
 );
+
+watchEffect(() => {
+  queryClient.prefetchQuery({
+    queryKey: ['products', { page: currentPage.value + 1 }],
+    queryFn: () => getProductsPaginate(currentPage.value + 1),
+  });
+});
 </script>
