@@ -1,8 +1,11 @@
 import { shopApi } from '@/api/shopApi';
 import type { ProductType } from '../types/product.type';
 
-export const getProductsPaginate = async (page = 1, limit = 10) => {
+export const getProductsPaginate = async (page = 1, limit = 12) => {
   try {
+    // retraso de 2 segundos
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+
     const { data } = await shopApi.get<ProductType[]>(
       `/products?limit=${limit}&offset=${limit * page}`,
     );
