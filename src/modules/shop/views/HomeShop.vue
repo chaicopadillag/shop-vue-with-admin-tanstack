@@ -499,5 +499,13 @@
 </template>
 
 <script lang="ts" setup>
+import { getProductsPaginate } from '@/modules/products/actions/get-products-paginate.action';
 import TabMenu from '@/modules/shop/components/TabMenu.vue';
+import { useQuery } from '@tanstack/vue-query';
+// getProductsPaginate();
+
+const { isPending, isFetching, isError, data, error } = useQuery({
+  queryKey: ['products'],
+  queryFn: () => getProductsPaginate(),
+});
 </script>
