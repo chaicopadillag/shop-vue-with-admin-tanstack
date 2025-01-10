@@ -1,3 +1,4 @@
+import { authRouter } from '@/modules/auth/router';
 import ShopLayout from '@/modules/shop/layouts/ShopLayout.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
@@ -16,6 +17,7 @@ const router = createRouter({
         },
       ],
     },
+    authRouter,
   ],
 });
 
