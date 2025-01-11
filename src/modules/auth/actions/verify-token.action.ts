@@ -17,7 +17,7 @@ export const verifyToken = async (): Promise<AuthResponseType> => {
 
     return data;
   } catch (error) {
-    console.log(`Error verifyToken: ${JSON.stringify(error)}`);
+    console.log(`Error verifyToken`);
 
     if (isAxiosError(error)) {
       const status = error.response?.status || 0;
