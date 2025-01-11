@@ -10,7 +10,7 @@ export const isAdminGuard = async (
 
   if (authStore.isAdmin) {
     next();
+  } else {
+    next({ name: 'home-shop' });
   }
-
-  next({ name: 'home-shop' });
 };
