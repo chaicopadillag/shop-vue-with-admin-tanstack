@@ -5,12 +5,12 @@
         <h3 class="font-semibold text-base text-gray-900 dark:text-gray-50">Productos</h3>
       </div>
       <div class="relative w-full max-w-full flex-grow flex-1 text-right">
-        <button
-          class="bg-blue-500 dark:bg-gray-100 text-white active:bg-blue-600 dark:text-gray-800 dark:active:text-gray-700 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-          type="button"
+        <router-link
+          to="/dashboard/products/new"
+          class="rounded-lg bg-blue-500 px-4 py-1.5 text-white duration-100 hover:bg-blue-600"
         >
-          See all
-        </button>
+          New Product
+        </router-link>
       </div>
     </div>
     <div v-if="isPending" class="flex items-center justify-center min-h-96">
@@ -93,47 +93,7 @@
 </template>
 <script lang="ts" setup>
 import PaginationButtons from '@/modules/common/components/PaginationButtons.vue';
-import { getProductsPaginate } from '@/modules/products/actions/get-products-paginate.action';
-import { useQuery, useQueryClient } from '@tanstack/vue-query';
-import { ref, watch, watchEffect } from 'vue';
-import { useRoute } from 'vue-router';
+import { useGetProducts } from '@/modules/common/composables/useGetProducts';
 
-const route = useRoute();
-const queryClient = useQueryClient();
-
-const currentPage = ref(1);
-
-const {
-  isPending,
-  isError,
-  data: products,
-} = useQuery({
-  queryKey: ['products', { page: currentPage }],
-  queryFn: () => getProductsPaginate(currentPage.value),
-});
-
-watch(
-  () => route.query,
-  ({ page }) => {
-    console.log({ page });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    currentPage.value = isNaN(page as any) ? 1 : Number(page as any);
-    console.log({ currentPage: currentPage.value });
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  },
-  {
-    immediate: true,
-  },
-);
-
-watchEffect(() => {
-  queryClient.prefetchQuery({
-    queryKey: ['products', { page: currentPage.value + 1 }],
-    queryFn: () => getProductsPaginate(currentPage.value + 1),
-  });
-});
+const { isError, isPending, products, currentPage } = useGetProducts();
 </script>
