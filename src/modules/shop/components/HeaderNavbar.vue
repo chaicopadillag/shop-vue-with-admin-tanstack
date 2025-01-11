@@ -105,10 +105,10 @@
             >
           </li>
           <li v-if="auth.authStatus === 'authenticated' && auth.isAdmin">
-            <a
-              href="#"
+            <router-link
+              to="/dashboard"
               class="block rounded py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-100 md:p-0 md:hover:bg-transparent md:hover:text-blue-700"
-              >Dashboard</a
+              >Dashboard</router-link
             >
           </li>
         </ul>
