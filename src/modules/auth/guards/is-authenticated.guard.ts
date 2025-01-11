@@ -9,8 +9,8 @@ export const isAuthenticatedGuard = async (
   const authStore = useAuthStore();
 
   if (authStore.authStatus === 'unauthenticated') {
-    return next({ name: 'login' });
+    next({ name: 'login' });
   }
 
-  return next();
+  next();
 };
