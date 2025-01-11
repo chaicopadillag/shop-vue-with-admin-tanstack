@@ -1,8 +1,10 @@
+import { isNotAuthenticatedGuard } from '@/modules/auth/guards/isNotAuthenticated.guard';
 import type { RouteRecordRaw } from 'vue-router';
 
 export const authRouter: RouteRecordRaw = {
   path: '/auth',
   name: 'auth',
+  beforeEnter: [isNotAuthenticatedGuard],
   redirect: { name: 'login' },
   component: () => import('@/modules/auth/layouts/AuthLayout.vue'),
   children: [

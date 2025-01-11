@@ -10,7 +10,6 @@ const router = createRouter({
       path: '/',
       name: 'shop',
       component: ShopLayout,
-      // beforeEnter: authGuard,
       children: [
         {
           path: '',
