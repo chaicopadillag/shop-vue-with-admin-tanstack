@@ -18,6 +18,8 @@ const authStore = useAuthStore();
 
 authStore.$subscribe(
   async (_, state) => {
+    console.log({ authStatus: state.authStatus });
+
     try {
       if (state.authStatus === 'checking') {
         const auth = await verifyToken();

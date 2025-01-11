@@ -8,7 +8,12 @@ export const isAdminGuard = async (
 ) => {
   const authStore = useAuthStore();
 
+  if (authStore.authStatus === 'checking') {
+    return next();
+  }
+
   if (authStore.isAdmin) {
+    console.log({ isAdmin: authStore.isAdmin });
     next();
   } else {
     next({ name: 'home-shop' });

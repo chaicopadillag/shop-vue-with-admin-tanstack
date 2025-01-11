@@ -22,7 +22,7 @@ export const dashboardRouter: RouteRecordRaw = {
     {
       path: 'products/:id',
       name: 'product',
-      component: () => import('@/modules/admin/views/ProductsView.vue'),
+      component: () => import('@/modules/admin/views/ProductView/ProductView.vue'),
     },
   ],
 };
