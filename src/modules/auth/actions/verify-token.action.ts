@@ -4,6 +4,15 @@ import type { AuthResponseType } from '../types/auth-types';
 
 export const verifyToken = async (): Promise<AuthResponseType> => {
   try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token not found');
+    }
+
+    if (token.length < 10) {
+      throw new Error('Token is invalid');
+    }
+
     const { data } = await shopApi.get<AuthResponseType>('/auth/check-status');
 
     return data;
