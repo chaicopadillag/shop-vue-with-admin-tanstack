@@ -14,5 +14,15 @@ export const dashboardRouter: RouteRecordRaw = {
       name: 'dashboard-home',
       component: () => import('@/modules/admin/views/DashboardView.vue'),
     },
+    {
+      path: 'products',
+      name: 'products',
+      component: () => import('@/modules/admin/views/ProductsView.vue'),
+    },
+    {
+      path: 'products/:id',
+      name: 'product',
+      component: () => import('@/modules/admin/views/ProductsView.vue'),
+    },
   ],
 };

@@ -10,8 +10,8 @@
           </div>
         </li>
         <li>
-          <a
-            href="#"
+          <router-link
+            :to="{ name: 'dashboard' }"
             class="relative flex flex-row items-center h-11 focus:outline-none hover:bg-blue-800 dark:hover:bg-gray-600 text-white-600 hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6"
           >
             <span class="inline-flex justify-center items-center ml-4">
@@ -31,10 +31,11 @@
               </svg>
             </span>
             <span class="ml-2 text-sm tracking-wide truncate">Dashboard</span>
-          </a>
+          </router-link>
         </li>
         <li>
-          <a
+          <router-link
+            :to="{ name: 'products' }"
             href="#"
             class="relative flex flex-row items-center h-11 focus:outline-none hover:bg-blue-800 dark:hover:bg-gray-600 text-white-600 hover:text-white-800 border-l-4 border-transparent hover:border-blue-500 dark:hover:border-gray-800 pr-6"
           >
@@ -54,12 +55,8 @@
                 ></path>
               </svg>
             </span>
-            <span class="ml-2 text-sm tracking-wide truncate">Board</span>
-            <span
-              class="hidden md:block px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-blue-500 bg-indigo-50 rounded-full"
-              >New</span
-            >
-          </a>
+            <span class="ml-2 text-sm tracking-wide truncate">Productos</span>
+          </router-link>
         </li>
         <li>
           <a
