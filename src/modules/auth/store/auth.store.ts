@@ -1,6 +1,6 @@
 import { useLocalStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import type { AuthStatus, UserType } from '../types/auth-types';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -20,10 +20,13 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = undefined;
   };
 
+  const isAdmin = computed(() => authUser.value?.roles.includes('admin'));
+
   return {
     authStatus,
     token,
     authUser,
+    isAdmin,
     setAuthUser,
     logout,
   };

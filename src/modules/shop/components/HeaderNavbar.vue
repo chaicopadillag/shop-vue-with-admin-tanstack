@@ -20,19 +20,30 @@
         <span class="self-center whitespace-nowrap text-xl font-semibold">Termcode</span>
       </a>
       <div class="mt-2 sm:mt-0 sm:flex md:order-2">
-        <!-- Login Button -->
-        <router-link
-          to="/auth"
-          class="rounde mr-3 hidden border border-blue-700 py-1.5 px-6 text-center text-sm font-medium text-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 md:inline-block rounded-lg"
-        >
-          Login
-        </router-link>
-        <router-link
-          to="/auth/register"
+        <template v-if="auth.authStatus === 'unauthenticated' || auth.authStatus === 'checking'">
+          <router-link
+            to="/auth/login"
+            class="rounde mr-3 hidden border border-blue-700 py-1.5 px-6 text-center text-sm font-medium text-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 md:inline-block rounded-lg"
+          >
+            Login
+          </router-link>
+          <router-link
+            to="/auth/register"
+            class="rounde mr-3 hidden bg-blue-700 py-1.5 px-6 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 md:mr-0 md:inline-block rounded-lg"
+          >
+            Register
+          </router-link>
+        </template>
+
+        <button
+          v-else
+          type="button"
+          @click="auth.logout"
           class="rounde mr-3 hidden bg-blue-700 py-1.5 px-6 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 md:mr-0 md:inline-block rounded-lg"
         >
-          Register
-        </router-link>
+          Loguot
+        </button>
+        <!-- Login Button -->
         <!-- Register Button -->
         <button
           data-collapse-toggle="navbar-sticky"
@@ -93,8 +104,21 @@
               >Contact</a
             >
           </li>
+          <li v-if="auth.authStatus === 'authenticated' && auth.isAdmin">
+            <a
+              href="#"
+              class="block rounded py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-100 md:p-0 md:hover:bg-transparent md:hover:text-blue-700"
+              >Dashboard</a
+            >
+          </li>
         </ul>
       </div>
     </div>
   </nav>
 </template>
+
+<script lang="ts" setup>
+import { useAuthStore } from '@/modules/auth/store/auth.store';
+
+const auth = useAuthStore();
+</script>

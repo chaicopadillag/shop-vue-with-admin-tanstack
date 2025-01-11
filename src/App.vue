@@ -16,8 +16,9 @@ const authStore = useAuthStore();
 
 authStore.$subscribe(
   async (_, state) => {
-    if (state.authStatus === 'authenticated' && route.path.includes('auth')) {
-      router.push({ name: 'dashboard' });
+    console.log({ path: route.path });
+    if (state.authStatus === 'authenticated' && route.path.startsWith('/auth/')) {
+      router.push({ name: 'home-shop' });
       return;
     }
 
@@ -28,6 +29,12 @@ authStore.$subscribe(
 
     try {
       if (state.authStatus === 'checking') {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+          return;
+        }
+
         const auth = await verifyToken();
         authStore.setAuthUser(auth.user, auth.token);
       }

@@ -1,10 +1,11 @@
-import { isAuthenticatedGuard } from '@/modules/auth/guards/isAuthenticated.guard';
+import { isAdminGuard } from '@/modules/auth/guards/is-admin.guard';
+import { isAuthenticatedGuard } from '@/modules/auth/guards/is-authenticated.guard';
 import type { RouteRecordRaw } from 'vue-router';
 
 export const dashboardRouter: RouteRecordRaw = {
   path: '/dashboard',
   name: 'dashboard',
-  beforeEnter: [isAuthenticatedGuard],
+  beforeEnter: [isAuthenticatedGuard, isAdminGuard],
   redirect: { name: 'dashboard-home' },
   component: () => import('@/modules/admin/layouts/DashboardLayout.vue'),
   children: [
