@@ -1,3 +1,4 @@
+import { dashboardRouter } from '@/modules/admin/router';
 import { authRouter } from '@/modules/auth/router';
 import ShopLayout from '@/modules/shop/layouts/ShopLayout.vue';
 import { createRouter, createWebHistory } from 'vue-router';
@@ -9,6 +10,7 @@ const router = createRouter({
       path: '/',
       name: 'shop',
       component: ShopLayout,
+      // beforeEnter: authGuard,
       children: [
         {
           path: '',
@@ -18,6 +20,7 @@ const router = createRouter({
       ],
     },
     authRouter,
+    dashboardRouter,
   ],
 });
 
