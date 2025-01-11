@@ -1,15 +1,17 @@
 <template>
   <h1 class="text-2xl font-semibold mb-4">Login</h1>
-  <form action="#" method="POST">
+  <form @submit.prevent="onSubmit">
     <!-- Username Input -->
     <div class="mb-4">
-      <label for="username" class="block text-gray-600">Username</label>
+      <label for="email" class="block text-gray-600">Correo</label>
       <input
         type="text"
-        id="username"
-        name="username"
+        id="email"
+        name="email"
         class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
         autocomplete="off"
+        v-model="formSignIn.email"
+        ref="inputEmail"
       />
     </div>
     <!-- Password Input -->
@@ -21,11 +23,19 @@
         name="password"
         class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
         autocomplete="off"
+        v-model="formSignIn.password"
+        ref="inputPassword"
       />
     </div>
     <!-- Remember Me Checkbox -->
     <div class="mb-4 flex items-center">
-      <input type="checkbox" id="remember" name="remember" class="text-blue-500" />
+      <input
+        type="checkbox"
+        id="remember"
+        name="remember"
+        class="text-blue-500"
+        v-model="formSignIn.remember"
+      />
       <label for="remember" class="text-gray-600 ml-2">Remember Me</label>
     </div>
     <!-- Forgot Password Link -->
@@ -34,8 +44,7 @@
     </div>
     <!-- Login Button -->
     <button
-      @click="onLogin"
-      type="button"
+      type="submit"
       class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full"
     >
       Login
@@ -48,18 +57,61 @@
 </template>
 
 <script lang="ts" setup>
+import { HttpStatusCode } from 'axios';
+import { reactive, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
+import { loginAction } from '../actions/login.action';
+import { useAuthStore } from '../store/auth.store';
 
 const router = useRouter();
+const authStore = useAuthStore();
+const toast = useToast();
 
-const onLogin = () => {
-  localStorage.setItem('userId', 'ABC-123');
+const inputEmail = ref<HTMLInputElement | null>(null);
+const inputPassword = ref<HTMLInputElement | null>(null);
 
+const formSignIn = reactive({
+  email: '',
+  password: '',
+  remember: false,
+});
+
+watchEffect(() => {
+  if (localStorage.getItem('email')) {
+    formSignIn.email = localStorage.getItem('email') ?? '';
+    formSignIn.remember = true;
+  }
+});
+
+const onSubmit = async () => {
+  if (!formSignIn.email) {
+    inputEmail.value?.focus();
+    return;
+  } else if (!formSignIn.password) {
+    inputPassword.value?.focus();
+    return;
+  }
+
+  if (formSignIn.remember) {
+    localStorage.setItem('email', formSignIn.email);
+  } else {
+    localStorage.removeItem('email');
+  }
   const lastPath = localStorage.getItem('lastPath') ?? '/';
 
-  // router.replace({
-  //   // name: 'home',
-  // });
-  router.replace(lastPath);
+  try {
+    const { data, status, message } = await loginAction(formSignIn.email, formSignIn.password);
+
+    if (status === HttpStatusCode.Ok && data) {
+      authStore.setAuthUser(data.user, data.token);
+      router.replace(lastPath);
+    } else {
+      toast.error(message);
+      authStore.logout();
+    }
+  } catch (error) {
+    console.log('Error en el login:', error);
+  }
 };
 </script>
