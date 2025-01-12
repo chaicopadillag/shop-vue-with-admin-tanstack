@@ -16,7 +16,7 @@ const validationSchema = yup.object<ProductType>({
   description: yup.string().required().min(125).max(1000),
   price: yup.number().required(),
   stock: yup.number().required().min(1),
-  sizes: yup.array(yup.string().required().oneOf(sizesButtons)).required(),
+  sizes: yup.array(yup.string().required().oneOf(sizesButtons)).required().min(1),
   gender: yup.string().required().oneOf(['men', 'women', 'kid']),
   images: yup.array(yup.string().required()),
 });

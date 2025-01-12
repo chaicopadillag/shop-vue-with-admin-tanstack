@@ -59,6 +59,7 @@
             {{ size }}
           </button>
         </div>
+        <span v-if="errors.sizes" class="text-red-500 text-xs">{{ errors.sizes }}</span>
       </div>
     </div>
 
