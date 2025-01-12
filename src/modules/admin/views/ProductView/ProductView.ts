@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getProductById } from '@/modules/admin/actions/get-product.action';
 import { updateOrCreateProduct } from '@/modules/admin/actions/update-create-product.action';
 import InputText from '@/modules/common/components/InputText.vue';
@@ -117,6 +118,7 @@ export default defineComponent({
         router.replace(`/dashboard/products/${updatedProduct.value!.id}`);
 
         resetProductForm(updatedProduct.value!);
+        imageFileList.value = [];
       }
     });
 
@@ -149,7 +151,11 @@ export default defineComponent({
     };
 
     const onSubmit = handleSubmit((values) => {
-      mutate(values);
+      const body: any = {
+        ...values,
+        images: [...values.images, ...imageFileList.value],
+      };
+      mutate(body);
     });
 
     return {

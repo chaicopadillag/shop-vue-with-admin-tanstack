@@ -7,7 +7,7 @@ export const getProductsPaginate = async (page = 1, limit = 12) => {
     // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const { data } = await shopApi.get<ProductType[]>(
-      `/products?limit=${limit}&offset=${limit * page}`,
+      `/products?limit=${limit}&offset=${limit * (page - 1)}`,
     );
 
     return data.map((product) => ({
