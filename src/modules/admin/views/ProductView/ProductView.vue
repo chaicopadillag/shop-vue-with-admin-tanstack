@@ -68,15 +68,25 @@
       <label for="stock" class="form-label">Imágenes</label>
       <!-- Row with scrollable horizontal -->
       <div class="flex p-2 overflow-x-auto space-x-8 w-full h-[265px] bg-gray-200 rounded">
-        <div class="flex-shrink-0" v-for="imgFile in imageFiles" :key="imgFile.key">
-          <img :src="imgFile.value" alt="imagen" class="w-[250px] h-[250px]" />
+        <div class="flex-shrink-0" v-for="image in productImagesList" :key="image.key">
+          <img :src="image.value" alt="imagen" class="w-[250px] h-[250px]" />
+        </div>
+        <div class="flex-shrink-0" v-for="image in imageFileList" :key="image.name">
+          <img :src="createUrlImage(image)" alt="imagen" class="w-[250px] h-[250px]" />
         </div>
       </div>
       <!-- Upload image -->
       <div class="col-span-2 my-2">
         <label for="image" class="form-label">Subir imagen</label>
 
-        <input multiple type="file" id="image" class="form-control" />
+        <input
+          multiple
+          type="file"
+          id="image"
+          class="form-control"
+          accept="image/*"
+          @change="onImageFileChange"
+        />
       </div>
 
       <div class="mb-4">

@@ -5,7 +5,7 @@ import TextArea from '@/modules/common/components/TextArea.vue';
 import type { ProductType } from '@/modules/products/types/product.type';
 import { useMutation, useQuery } from '@tanstack/vue-query';
 import { useFieldArray, useForm } from 'vee-validate';
-import { defineComponent, watch, watchEffect } from 'vue';
+import { defineComponent, ref, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import * as yup from 'yup';
@@ -38,6 +38,13 @@ export default defineComponent({
     const { values, errors, defineField, handleSubmit, resetForm } = useForm<ProductType>({
       validationSchema,
     });
+    const [title, titleAttrs] = defineField('title');
+    const [slug, slugAttrs] = defineField('slug');
+    const [description, descriptionAttrs] = defineField('description');
+    const [price, priceAttrs] = defineField('price');
+    const [stock, stockAttrs] = defineField('stock');
+    const [gender, genderAttrs] = defineField('gender');
+    const imageFileList = ref<File[]>([]);
 
     const {
       fields: sizeFields,
@@ -45,7 +52,7 @@ export default defineComponent({
       remove: removeSize,
     } = useFieldArray<string>('sizes');
 
-    const { fields: imageFiles } = useFieldArray<string>('images');
+    const { fields: productImagesList } = useFieldArray<string>('images');
 
     const {
       isError,
@@ -119,14 +126,19 @@ export default defineComponent({
       }
     });
 
-    const [title, titleAttrs] = defineField('title');
-    const [slug, slugAttrs] = defineField('slug');
-    const [description, descriptionAttrs] = defineField('description');
-    const [price, priceAttrs] = defineField('price');
-    const [stock, stockAttrs] = defineField('stock');
-    const [gender, genderAttrs] = defineField('gender');
-
     const hasSize = (size: string) => sizeFields.value.some((field) => field.value === size);
+
+    const createUrlImage = (file: File) => URL.createObjectURL(file);
+
+    const onImageFileChange = (event: Event) => {
+      const imageFiles = (event.target as HTMLInputElement).files;
+
+      if (imageFiles && imageFiles.length) {
+        for (const imageFile of imageFiles) {
+          imageFileList.value.push(imageFile);
+        }
+      }
+    };
 
     const toggleSize = (size: string) => {
       if (sizeFields.value.some((field) => field.value === size)) {
@@ -158,12 +170,15 @@ export default defineComponent({
       isLoading,
       errors,
       values,
-      imageFiles,
+      productImagesList,
       sizeFields,
       isPending,
+      imageFileList: imageFileList.value,
       onSubmit,
       toggleSize,
       hasSize,
+      createUrlImage,
+      onImageFileChange,
     };
   },
 });
