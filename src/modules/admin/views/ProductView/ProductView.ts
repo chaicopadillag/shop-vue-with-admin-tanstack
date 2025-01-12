@@ -1,12 +1,13 @@
 import InputText from '@/modules/common/components/InputText.vue';
 import TextArea from '@/modules/common/components/TextArea.vue';
 import type { ProductType } from '@/modules/products/types/product.type';
-import { useQuery } from '@tanstack/vue-query';
+import { useMutation, useQuery } from '@tanstack/vue-query';
 import { useFieldArray, useForm } from 'vee-validate';
 import { defineComponent, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import * as yup from 'yup';
 import { getProductById } from '../../actions/get-product.action';
+import { updateOrCreateProduct } from '../../actions/update-create-product.action';
 
 const sizesButtons = ['L', 'M', 'S', 'XL', 'XS', 'XXL'];
 
@@ -43,6 +44,7 @@ export default defineComponent({
     } = useFieldArray<string>('sizes');
 
     const { fields: imageFiles } = useFieldArray<string>('images');
+
     const {
       isError,
       isLoading,
@@ -53,24 +55,38 @@ export default defineComponent({
       retry: false,
     });
 
+    const {
+      data: updatedProduct,
+      isPending,
+      isSuccess,
+      mutate,
+    } = useMutation({
+      mutationFn: updateOrCreateProduct,
+    });
+
+    const resetProductForm = (product: ProductType) => {
+      resetForm({
+        values: {
+          id: product?.id,
+          title: product.title,
+          slug: product.slug,
+          description: product.description,
+          price: product.price,
+          stock: product.stock,
+          sizes: product.sizes,
+          images: product.images,
+          gender: product.gender,
+        },
+      });
+    };
+
     watch(
       product,
-      (newProduct) => {
-        if (!newProduct) {
+      (product) => {
+        if (!product) {
           return;
         }
-
-        resetForm({
-          values: {
-            title: newProduct.title,
-            slug: newProduct.slug,
-            description: newProduct.description,
-            price: newProduct.price,
-            stock: newProduct.stock,
-            sizes: newProduct.sizes,
-            images: newProduct.images,
-          },
-        });
+        resetProductForm(product);
       },
       {
         immediate: true,
@@ -81,6 +97,12 @@ export default defineComponent({
     watchEffect(() => {
       if (!isLoading.value && isError.value) {
         router.replace('/dashboard/products');
+      }
+    });
+
+    watch(isSuccess, (isSucc) => {
+      if (isSucc) {
+        resetProductForm(updatedProduct.value!);
       }
     });
 
@@ -102,7 +124,7 @@ export default defineComponent({
     };
 
     const onSubmit = handleSubmit((values) => {
-      console.log(values);
+      mutate(values);
     });
 
     return {
@@ -125,6 +147,7 @@ export default defineComponent({
       values,
       imageFiles,
       sizeFields,
+      isPending,
       onSubmit,
       toggleSize,
       hasSize,

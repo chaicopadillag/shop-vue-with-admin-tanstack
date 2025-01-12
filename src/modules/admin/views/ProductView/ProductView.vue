@@ -31,12 +31,12 @@
       <div class="flex flex-row gap-3">
         <div class="mb-4">
           <label for="price" class="form-label">Precio</label>
-          <InputText v-model="price" v-bind="priceAttrs" :error="errors.price" />
+          <InputText v-model.number="price" v-bind="priceAttrs" :error="errors.price" />
         </div>
 
         <div class="mb-4">
           <label for="stock" class="form-label">Inventario</label>
-          <InputText v-model="stock" v-bind="stockAttrs" :error="errors.stock" />
+          <InputText v-model.number="stock" v-bind="stockAttrs" :error="errors.stock" />
         </div>
       </div>
 
@@ -93,6 +93,7 @@
       <!-- Botón para guardar -->
       <div class="my-4 text-right">
         <button
+          :disabled="isLoading"
           type="submit"
           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >

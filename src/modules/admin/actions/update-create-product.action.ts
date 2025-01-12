@@ -1,7 +1,8 @@
 import { shopApi } from '@/api/shopApi';
+import { getImagesFullUrl } from '@/modules/products/actions/get-products-paginate.action';
 import type { ProductType } from '@/modules/products/types/product.type';
 
-export const updateOrCreateProduct = (product: Partial<ProductType>) => {
+export const updateOrCreateProduct = (product: Partial<ProductType>): Promise<ProductType> => {
   if (product.id) {
     return updateProduct(product);
   }
@@ -14,25 +15,23 @@ const updateProduct = async (product: Partial<ProductType>) => {
     const { id, ...productData } = product;
     const body = {
       ...productData,
-      images: getImageProductFilenames(productData.images || []),
+      images: productData.images!.map(getImageProductFilenames),
     };
 
-    const { data } = await shopApi.patch(`/products/${id}`, body);
+    const { data } = await shopApi.patch<ProductType>(`/products/${id}`, body);
 
-    return data;
+    return {
+      ...data,
+      images: data.images.map(getImagesFullUrl),
+    };
   } catch (error) {
     console.log('Error updating product', error);
     throw new Error('Error updating product');
   }
 };
 
-const getImageProductFilenames = (imageUrls: string[]) => {
-  return imageUrls.map((url) => {
-    if (url.startsWith('http')) {
-      return url.split('/').pop() || '';
-    }
-    return url;
-  });
+const getImageProductFilenames = (url: string) => {
+  return url.startsWith('http') ? (url.split('/').pop() ?? '') : url;
 };
 
 const createProduct = async (product: Partial<ProductType>) => {
