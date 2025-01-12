@@ -1,41 +1,42 @@
 <template>
   <div class="bg-white px-5 py-2 rounded dark:bg-gray-700 text-black dark:text-white">
-    <h1 class="text-3xl">Producto: <small class="text-blue-500">nombre</small></h1>
+    <h1 class="text-3xl">
+      Producto: <small class="text-blue-500">{{ title }}</small>
+    </h1>
     <hr class="my-4" />
   </div>
 
   <form
+    @submit="onSubmit"
     class="grid grid-cols-1 sm:grid-cols-2 bg-white px-5 gap-5 dark:bg-gray-700 text-black dark:text-white"
   >
     <div class="first-col">
       <!-- Primera parte del formulario -->
       <div class="mb-4">
         <label for="title" class="form-label">Título</label>
-        <input type="text" id="title" class="form-control" />
+        <InputText v-model="title" v-bind="titleAttrs" :error="errors.title" />
       </div>
 
       <div class="mb-4">
         <label for="slug" class="form-label">Slug</label>
-        <input type="text" id="slug" class="form-control" />
+        <InputText v-model="slug" v-bind="slugAttrs" :error="errors.slug" />
       </div>
 
       <div class="mb-4">
         <label for="description" class="form-label">Descripción</label>
-        <textarea
-          id="description"
-          class="shadow h-32 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        ></textarea>
+
+        <TextArea v-model="description" v-bind="descriptionAttrs" :error="errors.description" />
       </div>
 
       <div class="flex flex-row gap-3">
         <div class="mb-4">
           <label for="price" class="form-label">Precio</label>
-          <input type="number" id="price" class="form-control" />
+          <InputText v-model="price" v-bind="priceAttrs" :error="errors.price" />
         </div>
 
         <div class="mb-4">
           <label for="stock" class="form-label">Inventario</label>
-          <input type="number" id="stock" class="form-control" />
+          <InputText v-model="stock" v-bind="stockAttrs" :error="errors.stock" />
         </div>
       </div>
 
@@ -43,10 +44,17 @@
         <label for="sizes" class="form-label">Tallas</label>
         <div class="flex flex-row gap-2">
           <button
-            v-for="size in sizes"
+            v-for="size in sizesButtons"
             :key="size"
             type="button"
-            class="bg-blue-100 p-2 rounded w-14 mr-2 flex-1"
+            :class="[
+              'p-2 rounded w-14 mr-2 flex-1',
+              {
+                'bg-blue-100': !hasSize(size),
+                'bg-blue-500 text-white': hasSize(size),
+              },
+            ]"
+            @click="toggleSize(size)"
           >
             {{ size }}
           </button>
@@ -59,12 +67,8 @@
       <label for="stock" class="form-label">Imágenes</label>
       <!-- Row with scrollable horizontal -->
       <div class="flex p-2 overflow-x-auto space-x-8 w-full h-[265px] bg-gray-200 rounded">
-        <div class="flex-shrink-0">
-          <img src="https://via.placeholder.com/250" alt="imagen" class="w-[250px] h-[250px]" />
-        </div>
-
-        <div class="flex-shrink-0">
-          <img src="https://via.placeholder.com/250" alt="imagen" class="w-[250px] h-[250px]" />
+        <div class="flex-shrink-0" v-for="imgFile in imageFiles" :key="imgFile.key">
+          <img :src="imgFile.value" alt="imagen" class="w-[250px] h-[250px]" />
         </div>
       </div>
       <!-- Upload image -->
@@ -76,12 +80,13 @@
 
       <div class="mb-4">
         <label for="stock" class="form-label">Género</label>
-        <select class="form-control">
+        <select class="form-control" v-model="gender" v-bind="genderAttrs">
           <option value="">Seleccione</option>
           <option value="kid">Niño</option>
           <option value="women">Mujer</option>
           <option value="men">Hombre</option>
         </select>
+        <span v-if="errors.gender" class="text-red-500 text-xs">{{ errors.gender }}</span>
       </div>
 
       <!-- Botón para guardar -->
@@ -95,6 +100,16 @@
       </div>
     </div>
   </form>
+  <div
+    class="grid grid-cols-1 sm:grid-cols-2 bg-white px-5 gap-5 dark:bg-gray-700 text-black dark:text-white"
+  >
+    <div class="bg-green-200">
+      {{ values }}
+    </div>
+    <div class="bg-red-200">
+      {{ errors }}
+    </div>
+  </div>
 </template>
 
 <script lang="ts" src="./ProductView.ts"></script>
@@ -105,6 +120,6 @@
 }
 
 .form-control {
-  @apply shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none dark:bg-gray-700 text-black dark:text-white;
+  @apply shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none dark:bg-gray-700 dark:text-white;
 }
 </style>
