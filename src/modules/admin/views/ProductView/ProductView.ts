@@ -1,3 +1,5 @@
+import { getProductById } from '@/modules/admin/actions/get-product.action';
+import { updateOrCreateProduct } from '@/modules/admin/actions/update-create-product.action';
 import InputText from '@/modules/common/components/InputText.vue';
 import TextArea from '@/modules/common/components/TextArea.vue';
 import type { ProductType } from '@/modules/products/types/product.type';
@@ -5,9 +7,8 @@ import { useMutation, useQuery } from '@tanstack/vue-query';
 import { useFieldArray, useForm } from 'vee-validate';
 import { defineComponent, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
 import * as yup from 'yup';
-import { getProductById } from '../../actions/get-product.action';
-import { updateOrCreateProduct } from '../../actions/update-create-product.action';
 
 const sizesButtons = ['L', 'M', 'S', 'XL', 'XS', 'XXL'];
 
@@ -32,6 +33,7 @@ export default defineComponent({
   },
   setup(props) {
     const router = useRouter();
+    const toast = useToast();
 
     const { values, errors, defineField, handleSubmit, resetForm } = useForm<ProductType>({
       validationSchema,
@@ -59,6 +61,7 @@ export default defineComponent({
       data: updatedProduct,
       isPending,
       isSuccess,
+      isError: isUpdateError,
       mutate,
     } = useMutation({
       mutationFn: updateOrCreateProduct,
@@ -100,9 +103,19 @@ export default defineComponent({
       }
     });
 
-    watch(isSuccess, (isSucc) => {
-      if (isSucc) {
+    watch(isSuccess, (isSuccessMudated) => {
+      if (isSuccessMudated) {
+        toast.success('Product save successfully');
+
+        router.replace(`/dashboard/products/${updatedProduct.value!.id}`);
+
         resetProductForm(updatedProduct.value!);
+      }
+    });
+
+    watch(isUpdateError, (isErr) => {
+      if (isErr) {
+        toast.error('Error saving product');
       }
     });
 

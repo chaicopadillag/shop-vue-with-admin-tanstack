@@ -6,7 +6,7 @@
       </div>
       <div class="relative w-full max-w-full flex-grow flex-1 text-right">
         <router-link
-          to="/dashboard/products/new"
+          to="/dashboard/products/create"
           class="rounded-lg bg-blue-500 px-4 py-1.5 text-white duration-100 hover:bg-blue-600"
         >
           New Product

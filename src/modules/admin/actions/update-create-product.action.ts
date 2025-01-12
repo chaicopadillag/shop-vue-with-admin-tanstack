@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { shopApi } from '@/api/shopApi';
 import { getImagesFullUrl } from '@/modules/products/actions/get-products-paginate.action';
 import type { ProductType } from '@/modules/products/types/product.type';
 
 export const updateOrCreateProduct = (product: Partial<ProductType>): Promise<ProductType> => {
-  if (product.id) {
+  if (product.id && product.id !== '') {
     return updateProduct(product);
   }
 
@@ -36,7 +37,9 @@ const getImageProductFilenames = (url: string) => {
 
 const createProduct = async (product: Partial<ProductType>) => {
   try {
-    const { data } = await shopApi.post('/products', product);
+    const { id: _, ...body } = product;
+
+    const { data } = await shopApi.post('/products', body);
     return data;
   } catch (error) {
     console.log('Error creating product', error);
