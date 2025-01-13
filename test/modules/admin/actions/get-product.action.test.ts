@@ -49,4 +49,14 @@ describe('GetProductAction', () => {
       }),
     );
   });
+
+  it('Debe de prevenir el error al obtener el producto en el servicio', async () => {
+    const uuidProduct = '008ea87d-a16c-4c25-9de3-8a14bae089cd';
+
+    apiShopMock.onGet(`/products/${uuidProduct}`).reply(() => {
+      throw new Error('Unit test error call api get product');
+    });
+
+    await expect(getProductById(uuidProduct)).rejects.toThrow('Error getting product');
+  });
 });

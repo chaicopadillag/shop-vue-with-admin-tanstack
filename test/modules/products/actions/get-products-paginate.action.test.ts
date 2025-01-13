@@ -45,4 +45,15 @@ describe('GetProductsPaginateAction', () => {
       });
     });
   });
+
+  test('Debe de prevenir el error al obtener products paginado', async () => {
+    const productsUri = '/products';
+    const url = new RegExp(`${productsUri}/*`);
+
+    apiShop.onGet(url).reply(() => {
+      throw new Error('Unit test error call api get products');
+    });
+
+    await expect(getProductsPaginate()).rejects.toThrow('Error getting products');
+  });
 });
