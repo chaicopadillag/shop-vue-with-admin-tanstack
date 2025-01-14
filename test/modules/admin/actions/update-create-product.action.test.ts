@@ -145,6 +145,7 @@ describe('Subida Archivo', () => {
     const updatePayload: any = {
       id: '9de8ebd4-5cb3-4b5f-a2c9-eaa3a2a13dd1',
       ...productPayload,
+      images: [...productPayload.images, fileImage],
     };
 
     apiShopMock.onPost(`/files/product`).reply(() => {
