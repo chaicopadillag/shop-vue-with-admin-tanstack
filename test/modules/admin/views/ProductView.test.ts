@@ -6,6 +6,7 @@ import type { Mock } from 'vitest';
 import { ref } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { fakeProducts } from '../../../mock/fake-products';
+import InputText from '@/modules/common/components/InputText.vue';
 
 const router = createRouter({
   routes: [
@@ -99,5 +100,47 @@ describe('<ProductView/>', () => {
         expect(btn.classes()).toContain('bg-blue-100');
       }
     });
+  });
+
+  test('should submit form data success', async () => {
+    const wrapper = mount(ProductView, {
+      props: { id: 'xxxxxxxx' },
+      global: {
+        plugins: [router],
+      },
+    });
+    const form = wrapper.find('form');
+
+    await form.trigger('submit');
+    await new Promise((r) => setTimeout(r, 100));
+    expect(mutateSpy).toHaveBeenCalled();
+    expect(mutateSpy).toHaveBeenCalledWith({
+      description:
+        'Introducing the Tesla Chill Collection. The Men’s Chill Crew Neck Sweatshirt has a premium, heavyweight exterior and soft fleece interior for comfort in any season. The sweatshirt features a subtle thermoplastic polyurethane T logo on the chest and a Tesla wordmark below the back collar. Made from 60% cotton and 40% recycled polyester.',
+      gender: 'men',
+      id: '008ea87d-a16c-4c25-9de3-8a14bae089cd',
+      images: ['1740176-00-A_0_2000.jpg', '1740176-00-A_1.jpg'],
+      price: 75,
+      sizes: ['XS', 'S', 'L', 'XL', 'XXL'],
+      slug: 'mens_chill_crew_neck_sweatshirt',
+      stock: 7,
+      title: 'Men’s Chill Crew Neck Sweatshirt',
+    });
+  });
+
+  test('should not submit form data success', async () => {
+    const wrapper = mount(ProductView, {
+      props: { id: 'xxxxxxxx' },
+      global: {
+        plugins: [router],
+      },
+    });
+    const form = wrapper.find('form');
+    const titleInput = wrapper.findComponent(InputText);
+    titleInput.vm.$emit('update:modelValue', '');
+
+    await form.trigger('submit');
+    await new Promise((r) => setTimeout(r, 100));
+    expect(mutateSpy).not.toHaveBeenCalled();
   });
 });
