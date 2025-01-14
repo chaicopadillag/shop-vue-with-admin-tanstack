@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import ProductView from '@/modules/admin/views/ProductView/ProductView.vue';
+import InputText from '@/modules/common/components/InputText.vue';
 import { useQuery } from '@tanstack/vue-query';
 import { mount } from '@vue/test-utils';
 import type { Mock } from 'vitest';
 import { ref } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { fakeProducts } from '../../../mock/fake-products';
-import InputText from '@/modules/common/components/InputText.vue';
 
 const router = createRouter({
   routes: [
@@ -55,7 +55,7 @@ describe('<ProductView/>', () => {
   });
 
   test('Debe de redireccionar a /dashboard/products', () => {
-    const wrapper = mount(ProductView, {
+    mount(ProductView, {
       props: { id: 'xxxxxxxx' },
       global: {
         plugins: [router],
